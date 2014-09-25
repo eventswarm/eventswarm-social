@@ -81,7 +81,7 @@ them from the properties file).
     `TweetEntities` instance. These can be used with the various
     expression and matcher classes in EventSwarm.
 
--   The event classes implement both the Keyword and Keywords
+-   The event classes implement both the `Keyword` and `Keywords`
     interfaces, which can be used for word extraction and matching.
 
 
