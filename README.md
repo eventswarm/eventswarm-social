@@ -35,7 +35,7 @@ them from the properties file).
 ### Monitor the public stream:
 
 1.  Create a `JsonStatusListenerChannel` instance, preferably passing a
-    `TwitterFactory` instance (better to share a single instance across
+    `TwitterStreamFactory` instance (better to share a single instance across
     channels if you use more than one).
 
 2.  Set track keywords (i.e. query strings) and followed IDs using the
