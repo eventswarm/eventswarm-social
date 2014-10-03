@@ -19,7 +19,7 @@
     <orderEntry type="library" name="Maven: net.sf.opencsv:opencsv:2.3" level="project" />
     <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-core:4.0.2" level="project" />
     <orderEntry type="library" name="Maven: org.twitter4j:twitter4j-stream:4.0.2" level="project" />
-    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.1" level="project" />
+    <orderEntry type="library" scope="TEST" name="Maven: junit:junit:4.2" level="project" />
   </component>
 </module>
 
