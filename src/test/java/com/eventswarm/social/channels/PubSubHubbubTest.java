@@ -212,7 +212,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
     public void testRealSubscribe() throws Exception {
         Properties props = new Properties();
         props.load(this.getClass().getClassLoader().getResourceAsStream("superfeedr.properties"));
-        PubSubHubbub instance = new PubSubHubbub(new URL(props.getProperty("hub_url")), props.getProperty("sub_url"),
+        PubSubHubbub instance = new PubSubHubbub(new URL(props.getProperty("hub_url")), props.getProperty("callback_url"),
                 subURL.getPort(), props.getProperty("username"), props.getProperty("password"));
         instance.start();
         Map<String,String> options = new HashMap<String,String>();
@@ -227,7 +227,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
     public void testRealNotify() throws Exception {
         Properties props = new Properties();
         props.load(this.getClass().getClassLoader().getResourceAsStream("superfeedr.properties"));
-        PubSubHubbub instance = new PubSubHubbub(new URL(props.getProperty("hub_url")), props.getProperty("sub_url"),
+        PubSubHubbub instance = new PubSubHubbub(new URL(props.getProperty("hub_url")), props.getProperty("callback_url"),
                 subURL.getPort(), props.getProperty("username"), props.getProperty("password"));
         instance.start();
         Map<String,String> options = new HashMap<String,String>();
