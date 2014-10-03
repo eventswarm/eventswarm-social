@@ -4,3 +4,4 @@ target
 src/main/resources/log4j.properties
 src/main/resources/twitter4j.properties
 log/
+src/main/resources/superfeedr.properties
