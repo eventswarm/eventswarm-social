@@ -231,7 +231,26 @@ public class SuperFeedrAtomChannel implements PubSubContentHandler, AddEventTrig
      * @throws XPathExpressionException
      */
     protected String getId(Node item, Node status) throws XPathExpressionException {
-        return xpath.evaluate("id", item);
+        String id = xpath.evaluate("id", item);
+        String updated = null;
+        try {
+            updated = xpath.evaluate("updated", item);
+        } catch (XPathExpressionException exc) {
+            // ignore, just leave updated as null
+        }
+        if (updated != null) {
+            Date published = DatatypeConverter.parseDateTime(xpath.evaluate("published", item)).getTime();
+            Date upd = DatatypeConverter.parseDateTime(updated).getTime();
+            if (published.before(upd)) {
+                // this is an updated item, let EventSwarm assign an id by returning null
+                logger.info("Item has been updated, using UUID instead of item id");
+                return null;
+            } else {
+                return id;
+            }
+        } else {
+            return id;
+        }
     }
 
     /**
@@ -250,7 +269,7 @@ public class SuperFeedrAtomChannel implements PubSubContentHandler, AddEventTrig
     }
 
     /**
-     * Method to extract a suitable timestamp from an item node and/or the status node of the document
+     * Method to extract a source object from the item or status node of the document
      *
      * Default behaviour is to extract the '@feed' attribute of the status (a URL) and extract the domain name
      * from the feed url. Subclasses should override if this is not appropriate.
