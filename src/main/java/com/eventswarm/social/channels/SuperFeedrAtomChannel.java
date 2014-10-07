@@ -3,34 +3,25 @@ package com.eventswarm.social.channels;
 import com.eventswarm.AddEventAction;
 import com.eventswarm.AddEventTrigger;
 import com.eventswarm.events.Event;
-import com.eventswarm.events.Header;
 import com.eventswarm.events.Source;
 import com.eventswarm.events.Sources;
 import com.eventswarm.events.jdo.JdoHeader;
-import com.eventswarm.events.jdo.OrgJsonEvent;
 import com.eventswarm.events.jdo.XmlEventImpl;
 import com.eventswarm.util.EventTriggerDelegate;
 import org.apache.log4j.Logger;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.JSONTokener;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
 import javax.xml.bind.DatatypeConverter;
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.w3c.dom.DOMImplementation;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
