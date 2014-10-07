@@ -12,14 +12,13 @@ import static org.junit.Assert.*;
 
 import java.io.InputStream;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created with IntelliJ IDEA.
  * User: andyb
- * Date: 7/10/2014
- * Time: 11:11 AM
  * To change this template use File | Settings | File Templates.
  */
 public class SuperFeedrJsonChannelTest implements AddEventAction {
@@ -93,6 +92,24 @@ public class SuperFeedrJsonChannelTest implements AddEventAction {
         assertNotNull("Event should have a source", events.get(0).getHeader().getSource().getSourceId());
         assertNotNull("Event should have a timestamp", events.get(0).getHeader().getTimestamp().getTime());
         assertNotNull("JSON should contain an id field", ((OrgJsonEvent) events.get(0)).getString("id"));
+        instance.unsubscribe();
+    }
+
+    @Test
+    public void testSubscribeGoogleNews() throws Exception {
+        SuperFeedrJsonChannel instance = new SuperFeedrJsonChannel(subscriber);
+        instance.registerAction(this);
+        topic = new URL("http://news.google.com/news?ie=UTF-8&output=rss&q=" + URLEncoder.encode("asx bhp", "UTF8"));
+        instance.subscribe(topic, true);
+        assertFalse("Should be some events", events.isEmpty());
+        OrgJsonEvent event0 = (OrgJsonEvent) events.get(0);
+        System.out.println("First event id: " + event0.getString("id"));
+        System.out.println("First event title: " + event0.getString("title"));
+        System.out.println("First event json: " + event0.getJsonString());
+        assertNotNull("Event should have an id", events.get(0).getHeader().getEventId());
+        assertNotNull("Event should have a source", events.get(0).getHeader().getSource().getSourceId());
+        assertNotNull("Event should have a timestamp", events.get(0).getHeader().getTimestamp().getTime());
+        assertNotNull("JSON should contain an id field", event0.getString("id"));
         instance.unsubscribe();
     }
 
