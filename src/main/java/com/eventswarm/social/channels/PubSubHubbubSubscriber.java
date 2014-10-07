@@ -12,7 +12,7 @@ import java.util.*;
 import java.util.concurrent.Executor;
 
 /**
- * Abstract class implementing the PubSubHubbub subscriber protocol without concern for the payload (i.e. doesn't know
+ * Abstract class implementing the PubSubHubbubSubscriber subscriber protocol without concern for the payload (i.e. doesn't know
  * how to create events from the payload).
  *
  * The classes uses the JDK httpserver to receive requests from a hub and an HTTPUrlConnection to send
@@ -33,7 +33,7 @@ import java.util.concurrent.Executor;
  * User: andyb
  * To change this template use File | Settings | File Templates.
  */
-public class PubSubHubbub implements HttpHandler {
+public class PubSubHubbubSubscriber implements HttpHandler {
     private URL hubUrl;
     private String pushUrl;
     protected Map<String,PubSubContentHandler> handlers; // protected so we can access in test
@@ -60,20 +60,20 @@ public class PubSubHubbub implements HttpHandler {
     // Use a constant SALT for hard-to-guess callback IDs so that we can survive restarts
     public static final byte[] SALT = "EventSwarm".getBytes();
 
-    private static Logger logger = Logger.getLogger(PubSubHubbub.class);
+    private static Logger logger = Logger.getLogger(PubSubHubbubSubscriber.class);
 
     /**
      * Create a channel receiving notifications from the specified hub on the specified base url
      *
      * Currently assumes HTTP basic auth (implication: please use an HTTPS URL for the hub)
      *
-     * @param hubUrl Feed URL of PubSubHubbub hub server
+     * @param hubUrl Feed URL of PubSubHubbubSubscriber hub server
      * @param pushUrl Base URL for receiving notifications, no parameters, no trailing '/', we assume proper encoding
      * @param port Port number for listening to receive requests
      * @param user User name for access to hub (if null, no credentials are sent)
      * @param password Password for access to the hub
      */
-    public PubSubHubbub(URL hubUrl, String pushUrl, int port, String user, String password) {
+    public PubSubHubbubSubscriber(URL hubUrl, String pushUrl, int port, String user, String password) {
         logger.debug("Creating new instance");
         this.hubUrl = hubUrl;
         // strip trailing '/' from URL if present
@@ -131,7 +131,7 @@ public class PubSubHubbub implements HttpHandler {
      *
      * @param topic
      */
-    private String makeId(URL topic, Map<String,String> other) {
+    protected String makeId(URL topic, Map<String,String> other) {
         digest.update(SALT);
         digest.update(topic.toString().getBytes());
         if (other != null) {
@@ -151,7 +151,7 @@ public class PubSubHubbub implements HttpHandler {
      *
      * @param id subscription id to unsubscribe
      * @param handler Handler to unsubscribe
-     * @throws PubSubHubbub.PubSubException
+     * @throws PubSubHubbubSubscriber.PubSubException
      */
     public void unsubscribe(String id, PubSubContentHandler handler) throws PubSubException {
         if (handlers.get(id) == handler) {
@@ -192,8 +192,24 @@ public class PubSubHubbub implements HttpHandler {
         return server.getExecutor();
     }
 
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     /**
-     * Start the HTTP server for receiving PubSubHubbub requests.
+     * Start the HTTP server for receiving PubSubHubbubSubscriber requests.
      *
      * @throws PubSubException
      */
@@ -364,7 +380,7 @@ public class PubSubHubbub implements HttpHandler {
      * @param text
      * @return
      */
-    private String encode(String text) {
+    protected String encode(String text) {
         try {
             return URLEncoder.encode(text, ENCODING);
         } catch (UnsupportedEncodingException exc) {
@@ -380,12 +396,12 @@ public class PubSubHubbub implements HttpHandler {
      * @param text
      * @return
      */
-    private String decode(String text) {
+    protected String decode(String text) {
         try {
             return URLDecoder.decode(text, "UTF8");
         } catch (UnsupportedEncodingException exc) {
             // should never get here
-            System.out.println("WTF!!? UTF8 is not a valid encoding. Exception: " +  exc.getMessage());
+            System.out.println("WTF!!? UTF8 is not a valid encoding. Exception: " + exc.getMessage());
             return null;
         }
     }
@@ -394,26 +410,24 @@ public class PubSubHubbub implements HttpHandler {
      * Send a sub/unsub request to the hub
      *
      * @return
-     * @throws PubSubHubbub.PubSubException
+     * @throws PubSubHubbubSubscriber.PubSubException
      */
     protected boolean send(SubRequest request, URL topic, URL callback, Map<String,String> other) throws PubSubException {
         try {
-            logger.info("Sending POST request to " + hubUrl.toString() + " with callback " + callback.toString());
-            HttpURLConnection con = getPostConnection();
+            logger.info("Sending POST request to " + hubUrl.toString() + " with mode " + request.toString()
+                    + " and callback " + callback.toString());
+            HttpURLConnection con = getConnection();
             OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
-            out.write(CALLBACK + "=" + encode(callback.toString()));
-            out.write(AMP + TOPIC + "=" + encode(topic.toString()));
-            out.write(AMP + MODE + "=" + request.toString());
-            if (other != null) {
-                for(String key : other.keySet()) {
-                    out.write(AMP + encode(key) + "=" + encode(other.get(key)));
-                }
-            }
+            addParam(out, CALLBACK + "=" + encode(callback.toString()));
+            addParam(out, AMP + TOPIC + "=" + encode(topic.toString()));
+            addParam(out, AMP + MODE + "=" + request.toString());
+            addOtherParams(out,other);
             out.close();
             int code = con.getResponseCode();
             logger.info("Received HTTP response with code " + Integer.toString(code));
-            if (code > 202) {
-                // subscription and related requests should always return a 202
+            if (code > 299) {
+                // subscription and related requests should always return a 202, but this is not consistent
+                // so accept any 2XX response
                 InputStream in = con.getErrorStream();
                 if (in == null) in = con.getInputStream(); // might have returned the wrong code
                 logger.error("Error in response, content was: " + readStream(in));
@@ -429,7 +443,21 @@ public class PubSubHubbub implements HttpHandler {
         }
     }
 
-    private String readStream(InputStream in) throws IOException {
+
+    protected void addOtherParams(OutputStreamWriter out, Map<String,String> params) throws IOException {
+        if (params != null) {
+            for(String key : params.keySet()) {
+                addParam(out, AMP + encode(key) + "=" + encode(params.get(key)));
+            }
+        }
+    }
+
+    protected void addParam(OutputStreamWriter out, String param) throws IOException {
+        logger.debug("Setting HTTP param: " + param);
+        out.write(param);
+    }
+
+    protected String readStream(InputStream in) throws IOException {
         Scanner scanner = new Scanner(in);
         StringBuilder result = new StringBuilder();
         while (scanner.hasNextLine()) {
@@ -439,21 +467,25 @@ public class PubSubHubbub implements HttpHandler {
     }
 
     /**
-     * Grab a connection to the hub URL with appropriate headers, including auth if defined
+     * Grab a POST connection to the hub URL with appropriate headers, including auth if defined
      *
      * @return
      * @throws IOException
      */
-    private HttpURLConnection getPostConnection() throws IOException {
+    protected HttpURLConnection getConnection() throws IOException {
         HttpURLConnection con = (HttpURLConnection) hubUrl.openConnection();
         con.setRequestMethod(HTTP_POST);
+        setHttpAuthorization(con);
+        con.setDoOutput(true);
+        con.connect();
+        return con;
+    }
+
+    protected void setHttpAuthorization(HttpURLConnection con) {
         if (user != null) {
             con.setRequestProperty(HTTP_AUTHORIZATION, "Basic " +
                     DatatypeConverter.printBase64Binary((user + ":" + password).getBytes()));
         }
-        con.setDoOutput(true);
-        con.connect();
-        return con;
     }
 
     /**

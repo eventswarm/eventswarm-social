@@ -21,7 +21,7 @@ import java.util.*;
  * Time: 11:23 AM
  * To change this template use File | Settings | File Templates.
  */
-public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
+public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHandler {
     URL hubURL, subURL;
     HttpServer hub;
     HttpExchange hubRequest;
@@ -59,7 +59,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
 
     @Test
     public void testConstruct() throws Exception {
-        PubSubHubbub instance = new PubSubHubbub(hubURL, subURL.toExternalForm(), subURL.getPort(), null, null);
+        PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toExternalForm(), subURL.getPort(), null, null);
         assertNotNull(instance);
         assertNotNull(instance.handlers);
         assertNotNull(instance.subs);
@@ -68,7 +68,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
 
     @Test
     public void testSubscribe() throws Exception {
-        PubSubHubbub instance = new PubSubHubbub(hubURL, subURL.toString(), subURL.getPort(), null, null);
+        PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toString(), subURL.getPort(), null, null);
         instance.start();
         hubResponseCode = 202;
         String id = instance.subscribe(this, new URL("http://myrssfeed.com"), null);
@@ -87,7 +87,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
 
     @Test
     public void testSubscribeSecondHandler() throws Exception {
-        PubSubHubbub instance = new PubSubHubbub(hubURL, subURL.toString(), subURL.getPort(), null, null);
+        PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toString(), subURL.getPort(), null, null);
         instance.start();
         hubResponseCode = 202;
         String id = instance.subscribe(this, new URL("http://myrssfeed.com"), null);
@@ -101,7 +101,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
         try {
             String id2 = instance.subscribe(other, new URL("http://myrssfeed.com"), null);
             fail("Second subscription should be refused");
-        } catch (PubSubHubbub.PubSubException exc) {
+        } catch (PubSubHubbubSubscriber.PubSubException exc) {
             assertTrue(instance.subs.containsKey(id));
             assertEquals(this, instance.handlers.get(id));
         }
@@ -110,7 +110,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
 
     @Test
     public void testUnsubscribe() throws Exception {
-        PubSubHubbub instance = new PubSubHubbub(hubURL, subURL.toString(), subURL.getPort(), null, null);
+        PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toString(), subURL.getPort(), null, null);
         instance.start();
         hubResponseCode = 202;
         String id = instance.subscribe(this, new URL("http://myrssfeed.com"), null);
@@ -129,7 +129,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
 
     @Test
     public void testStopAndUnsubscribe() throws Exception {
-        PubSubHubbub instance = new PubSubHubbub(hubURL, subURL.toString(), subURL.getPort(), null, null);
+        PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toString(), subURL.getPort(), null, null);
         instance.start();
         hubResponseCode = 202;
         String id = instance.subscribe(this, new URL("http://myrssfeed.com"), null);
@@ -146,7 +146,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
 
     @Test
     public void testHandleSubConfirm() throws Exception {
-        PubSubHubbub instance = new PubSubHubbub(hubURL, subURL.toString(), subURL.getPort(), null, null);
+        PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toString(), subURL.getPort(), null, null);
         instance.start();
         hubResponseCode = 202;
         String id = instance.subscribe(this, new URL("http://myrssfeed.com"), null);
@@ -159,7 +159,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
 
     @Test
     public void testHandleSubBadId() throws Exception {
-        PubSubHubbub instance = new PubSubHubbub(hubURL, subURL.toString(), subURL.getPort(), null, null);
+        PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toString(), subURL.getPort(), null, null);
         instance.start();
         hubResponseCode = 202;
         String id = instance.subscribe(this, new URL("http://myrssfeed.com"), null);
@@ -171,7 +171,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
 
     @Test
     public void testHandleSubBadTopic() throws Exception {
-        PubSubHubbub instance = new PubSubHubbub(hubURL, subURL.toString(), subURL.getPort(), null, null);
+        PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toString(), subURL.getPort(), null, null);
         instance.start();
         hubResponseCode = 202;
         String id = instance.subscribe(this, new URL("http://myrssfeed.com"), null);
@@ -183,7 +183,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
 
     @Test
     public void testHandleUnSubConfirm() throws Exception {
-        PubSubHubbub instance = new PubSubHubbub(hubURL, subURL.toString(), subURL.getPort(), null, null);
+        PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toString(), subURL.getPort(), null, null);
         instance.start();
         hubResponseCode = 202;
         String id = instance.subscribe(this, new URL("http://myrssfeed.com"), null);
@@ -198,7 +198,7 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
 
     @Test
     public void testHandleNotify() throws Exception {
-        PubSubHubbub instance = new PubSubHubbub(hubURL, subURL.toString(), subURL.getPort(), null, null);
+        PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toString(), subURL.getPort(), null, null);
         instance.start();
         hubResponseCode = 202;
         String id = instance.subscribe(this, new URL("http://myrssfeed.com"), null);
@@ -209,32 +209,56 @@ public class PubSubHubbubTest implements HttpHandler, PubSubContentHandler {
     }
 
     @Test
-    public void testRealSubscribe() throws Exception {
-        Properties props = new Properties();
-        props.load(this.getClass().getClassLoader().getResourceAsStream("superfeedr.properties"));
-        PubSubHubbub instance = new PubSubHubbub(new URL(props.getProperty("hub_url")), props.getProperty("callback_url"),
-                subURL.getPort(), props.getProperty("username"), props.getProperty("password"));
+    public void testHandleRemoteSubConfirm() throws Exception {
+        PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toString(), subURL.getPort(), null, null);
         instance.start();
-        Map<String,String> options = new HashMap<String,String>();
-        options.put("hub.verify", "async");
-        String id = instance.subscribe(this, new URL("http://blog.superfeedr.com"), options);
-        Thread.sleep(2000); // give superfeedr a chance to respond
-        assertTrue(instance.confirmed.get(id));
-        instance.stop(true);
+        hubResponseCode = 202;
+        String id = instance.subscribe(this, new URL("http://myrssfeed.com"), null);
+        System.out.println("Subscription id is: " + id);
+        subURL = new URL("http://pubsub.whyanbeel.net");
+        subGet(id, "hub.mode=subscribe&hub.topic=" + encode("http://myrssfeed.com") + "&hub.challenge=blahblah&hub.lease_seconds=3600");
+        assertEquals(200, subResponseCode);
+        assertEquals("blahblah", subResponse);
+        instance.stop(false);
+    }
+
+    @Test
+    public void testRealSubscribe() throws Exception {
+        PubSubHubbubSubscriber instance = null;
+        try {
+            Properties props = new Properties();
+            props.load(this.getClass().getClassLoader().getResourceAsStream("superfeedr.properties"));
+            instance = new PubSubHubbubSubscriber(new URL(props.getProperty("hub_url")), props.getProperty("callback_url"),
+                    subURL.getPort(), props.getProperty("username"), props.getProperty("password"));
+            instance.start();
+            Map<String,String> options = new HashMap<String,String>();
+            options.put("hub.verify", "async");
+            String id = instance.subscribe(this, new URL("http://blog.superfeedr.com"), options);
+            System.out.println("Sleeping to wait for the confirmation");
+            Thread.sleep(4000); // give superfeedr a chance to respond
+            assertTrue("Subscription id should be confirmed", instance.confirmed.containsKey(id));
+            assertTrue("Confirmation entry should be true", instance.confirmed.get(id));
+        } finally {
+            if (instance != null) {instance.stop(true);}
+        }
     }
 
     @Test
     public void testRealNotify() throws Exception {
-        Properties props = new Properties();
-        props.load(this.getClass().getClassLoader().getResourceAsStream("superfeedr.properties"));
-        PubSubHubbub instance = new PubSubHubbub(new URL(props.getProperty("hub_url")), props.getProperty("callback_url"),
-                subURL.getPort(), props.getProperty("username"), props.getProperty("password"));
-        instance.start();
-        Map<String,String> options = new HashMap<String,String>();
-        options.put("hub.verify", "async");
-        String id = instance.subscribe(this, new URL("http://push-pub.appspot.com/feed"), options);
-        Thread.sleep(10000);
-        instance.stop(true);
+        PubSubHubbubSubscriber instance = null;
+        try {
+            Properties props = new Properties();
+            props.load(this.getClass().getClassLoader().getResourceAsStream("superfeedr.properties"));
+            instance = new PubSubHubbubSubscriber(new URL(props.getProperty("hub_url")), props.getProperty("callback_url"),
+                    subURL.getPort(), props.getProperty("username"), props.getProperty("password"));
+            instance.start();
+            Map<String,String> options = new HashMap<String,String>();
+            options.put("hub.verify", "async");
+            String id = instance.subscribe(this, new URL("http://push-pub.appspot.com/feed"), options);
+            Thread.sleep(10000);
+        } finally {
+            if (instance != null) {instance.stop(true);}
+        }
     }
 
     @Override

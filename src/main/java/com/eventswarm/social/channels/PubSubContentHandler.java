@@ -15,7 +15,7 @@ public interface PubSubContentHandler {
      * body with the specified headers.
      *
      * Implementations must internalise exceptions and should attempt to handle the content as quickly
-     * as possible, since the PubSubHubbub protocol handler waits for this method to complete before responding.
+     * as possible, since the PubSubHubbubSubscriber protocol handler waits for this method to complete before responding.
      *
      * Note that this interface assumes the body will be string encoded. Might need to revisit if we have any
      * issues here.

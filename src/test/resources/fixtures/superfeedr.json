@@ -1,0 +1,106 @@
+{
+    "status": {
+        "entriesCountSinceLastMaintenance": 24,
+        "lastParse": 1290793065,
+        "period": "600",
+        "lastMaintenanceAt": 1290778665,
+        "feed": "http://domain.tld/feed.xml",
+        "lastFetch": 1290796665,
+        "code": 200,
+        "title": "A wonderful feed",
+        "nextFetch": 1290803865,
+        "http": "Awesome we got the feed right"
+    },
+    "items": [
+        {
+            "geo": {
+                "type": "point",
+                "coordinates": [
+                    47.597553,
+                    -122.15925
+                ]
+            },
+            "standardLinks": {
+                "picture": [
+                    {
+                        "type": "image/png",
+                        "href": "http://domain.tld/entry/image_.png",
+                        "title": "A beautiful picture that illustrates the entry"
+                    }
+                ],
+                "replies": [
+                    {
+                        "type": "text/html",
+                        "href": "http://domain.tld/entry/1.xml",
+                        "title": ""
+                    }
+                ]
+            },
+            "permalinkUrl": "http://domain.tld/entry/1",
+            "verb": "publish",
+            "content": "Entry published on hour ago when it was shinny outside, but now it's raining",
+            "published": 1271851240,
+            "actor": {
+                "displayName": "First",
+                "image": "http://domain.tld/first.png",
+                "permalinkUrl": "http://domain.tld/first/profile",
+                "id": "id-first",
+                "objectType": "dude",
+                "title": "First"
+            },
+            "categories": [
+                "Things",
+                "Picture"
+            ],
+            "id": "domain.tld:09/05/03-1",
+            "object": {
+                "permalinkUrl": "http://domain.tld/object/2",
+                "content": "hello world",
+                "published": 1271768440,
+                "actor": {
+                    "displayName": "Second",
+                    "permalinkUrl": "http://domain.tld/second"
+                },
+                "id": "object-id",
+                "updated": 1271851240,
+                "title": "Title of the Object",
+                "objectType": "place"
+            },
+            "title": "Entry published on hour ago",
+            "updated": 1271851240,
+            "source": {
+                "id": "http://blog.superfeedr.com/",
+                "title": "Superfeedr Blog",
+                "updated": 1245776753,
+                "permalinkUrl": "http://blog.superfeedr.com/"
+            }
+        },
+        {
+            "permalinkUrl": "http://www.macrumors.com/2009/05/06/adwhirl-free-ad-supported-iphone-apps-can-very-lucrative/",
+            "published": 1241616887,
+            "content": "Mobile advertising company AdWhirl issued a report (PDF) that details the success of some of the top ad-supported iPhone apps. AdWhirl serves 250 million ad impressions monthly to over 10% of the top 50 Apps in the App Store.br /\n   br /\n   br /\n   ...",
+            "id": "http://www.macrumors.com/2009/05/06/adwhirl-free-ad-supported-iphone-apps-can-very-lucrative/",
+            "title": "AdWhirl: Free Ad-Supported iPhone Apps Can Be Very Lucrative"
+        }
+    ],
+    "subtitle": "This is certainly a wonderful feed that you need to read!",
+    "standardLinks": {
+        "canonical": [
+            {
+                "type": "application/atom+xml",
+                "href": "http://feed.domain.tld/main.xml",
+                "title": null
+            }
+        ],
+        "self": [
+            {
+                "type": "application/atom+xml",
+                "href": "http://domain.tld/feed.xml",
+                "title": null
+            }
+        ]
+    },
+    "id": "http://domain.tld/feed.xml",
+    "title": "A wonderful feed",
+    "updated": 1290800265
+}
