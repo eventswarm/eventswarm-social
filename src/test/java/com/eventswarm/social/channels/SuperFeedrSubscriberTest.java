@@ -20,8 +20,6 @@ import static org.junit.Assert.*;
 /**
  * Created with IntelliJ IDEA.
  * User: andyb
- * Date: 6/10/2014
- * Time: 2:44 PM
  * To change this template use File | Settings | File Templates.
  */
 public class SuperFeedrSubscriberTest implements PubSubContentHandler {

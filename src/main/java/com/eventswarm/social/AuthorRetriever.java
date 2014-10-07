@@ -12,8 +12,6 @@ import com.eventswarm.events.Event;
  *
  * Created with IntelliJ IDEA.
  * User: andyb
- * Date: 16/04/13
- * Time: 11:33 AM
  * To change this template use File | Settings | File Templates.
  */
 public class AuthorRetriever implements ValueRetriever<String> {

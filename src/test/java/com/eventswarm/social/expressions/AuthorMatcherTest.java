@@ -8,8 +8,6 @@ import static org.junit.Assert.*;
 /**
  * Created with IntelliJ IDEA.
  * User: andyb
- * Date: 3/10/13
- * Time: 4:56 PM
  * To change this template use File | Settings | File Templates.
  */
 public class AuthorMatcherTest {

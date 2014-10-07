@@ -13,8 +13,6 @@ import java.util.List;
 /**
  * Created with IntelliJ IDEA.
  * User: andyb
- * Date: 24/09/13
- * Time: 3:33 PM
  * To change this template use File | Settings | File Templates.
  */
 public class JsonStatusListenerChannelTest implements AddEventAction {

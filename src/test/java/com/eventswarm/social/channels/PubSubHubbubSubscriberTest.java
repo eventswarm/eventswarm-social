@@ -17,8 +17,6 @@ import java.util.*;
 /**
  * Created with IntelliJ IDEA.
  * User: andyb
- * Date: 3/10/2014
- * Time: 11:23 AM
  * To change this template use File | Settings | File Templates.
  */
 public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHandler {

@@ -21,8 +21,6 @@ import java.util.*;
  *
  * Created with IntelliJ IDEA.
  * User: andyb
- * Date: 24/09/13
- * Time: 2:15 PM
  * To change this template use File | Settings | File Templates.
  */
 public class JsonTweetEvent extends OrgJsonEvent implements Keywords, OrderedKeywords, TweetEntities {

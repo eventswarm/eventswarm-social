@@ -23,8 +23,6 @@ import twitter4j.TwitterStreamFactory;
  *
  * Created with IntelliJ IDEA.
  * User: andyb
- * Date: 24/09/13
- * Time: 2:01 PM
  * To change this template use File | Settings | File Templates.
  */
 public class JsonStatusListenerChannel extends StatusListenerChannel implements StatusListener {

@@ -16,8 +16,6 @@ import java.util.Properties;
 /**
  * Created with IntelliJ IDEA.
  * User: andyb
- * Date: 24/07/13
- * Time: 12:28 PM
  * To change this template use File | Settings | File Templates.
  */
 public class StatusQueryChannelTest implements AddEventAction {
