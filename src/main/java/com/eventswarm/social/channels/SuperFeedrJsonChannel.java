@@ -10,6 +10,7 @@ import com.eventswarm.events.jdo.OrgJsonEvent;
 import com.eventswarm.util.EventTriggerDelegate;
 import org.apache.log4j.Logger;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
@@ -30,6 +31,8 @@ public class SuperFeedrJsonChannel implements PubSubContentHandler, AddEventTrig
     private EventTriggerDelegate delegate;
     private SuperFeedrSubscriber subscriber;
     private Map<String,URL> subscriptions;
+    private long count;
+    private long errors;
 
     public static final String DEFAULT_SOURCE = "superfeedr.com";
     public static final Logger logger = Logger.getLogger(SuperFeedrJsonChannel.class);
@@ -56,6 +59,14 @@ public class SuperFeedrJsonChannel implements PubSubContentHandler, AddEventTrig
 
     public Map<String, URL> getSubscriptions() {
         return subscriptions;
+    }
+
+    public long getErrors() {
+        return errors;
+    }
+
+    public long getCount() {
+        return count;
     }
 
     /**
@@ -92,13 +103,24 @@ public class SuperFeedrJsonChannel implements PubSubContentHandler, AddEventTrig
      * @param headers Map of headers
      */
     public void handle(InputStream body, Map<String, List<String>> headers) {
-        JSONObject object = new JSONObject(new JSONTokener(body));
-        JSONArray items = object.getJSONArray("items");
-        Source source =  getSource(object);
-        for (int i=0; i < items.length(); i++) {
-            JSONObject item = items.getJSONObject(i);
-            Header header = new JdoHeader(new Date(item.getLong("published")*1000), source, getId(item));
-            delegate.fire(new OrgJsonEvent(header, item));
+        try {
+            JSONObject object = new JSONObject(new JSONTokener(body));
+            JSONArray items = object.getJSONArray("items");
+            Source source =  getSource(object);
+            for (int i=0; i < items.length(); i++) {
+                JSONObject item = items.getJSONObject(i);
+                String id = getId(item);
+                if (id == null) {
+                    errors++;
+                    logger.error("Could not extract id from JSON item");
+                } else {
+                    Header header = new JdoHeader(new Date(item.getLong("published")*1000), source, getId(item));
+                    delegate.fire(new OrgJsonEvent(header, item));
+                    count++;
+                }
+            }
+        } catch (JSONException exc) {
+            errors++;
         }
     }
 

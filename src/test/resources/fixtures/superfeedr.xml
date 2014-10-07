@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <status feed="http://push-pub.appspot.com/feed" xmlns="http://superfeedr.com/xmpp-pubsub-ext">
+        <http code="200">Fetched (ring) 200 43200 and parsed 0/20 entries</http>
+        <next_fetch>2014-10-07T04:14:31.000Z</next_fetch>
+        <period>43200</period>
+        <last_fetch>2014-10-06T16:14:31.000Z</last_fetch>
+        <last_parse>2014-10-06T16:14:31.000Z</last_parse>
+        <last_maintenance_at>2014-10-06T16:14:31.000Z</last_maintenance_at>
+    </status>
+    <title>Publisher example</title>
+    <entry xmlns="http://www.w3.org/2005/Atom" xmlns:geo="http://www.georss.org/georss"
+           xmlns:as="http://activitystrea.ms/spec/1.0/" xmlns:sf="http://superfeedr.com/xmpp-pubsub-ext">
+        <id>http://push-pub.appspot.com/feed/5723348596162560</id>
+        <published>2014-10-03T06:13:58.000Z</published>
+        <updated>2014-10-03T06:13:58.000Z</updated>
+        <title>EventSwarm test</title>
+        <content type="text">some content</content>
+        <link title="EventSwarm test" rel="alternate" href="http://push-pub.appspot.com/entry/5723348596162560"
+              type="text/html"/>
+    </entry>
+    <entry xmlns="http://www.w3.org/2005/Atom" xmlns:geo="http://www.georss.org/georss"
+           xmlns:as="http://activitystrea.ms/spec/1.0/" xmlns:sf="http://superfeedr.com/xmpp-pubsub-ext">
+        <id>http://push-pub.appspot.com/feed/5678701068943360</id>
+        <published>2014-10-02T17:50:00.000Z</published>
+        <updated>2014-10-02T17:50:00.000Z</updated>
+        <title>hello</title>
+        <content type="text">hi</content>
+        <link title="hello" rel="alternate" href="http://push-pub.appspot.com/entry/5678701068943360" type="text/html"/>
+    </entry>
+</feed>
