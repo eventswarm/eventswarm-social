@@ -24,6 +24,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 
+import javax.xml.bind.DatatypeConverter;
 import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -181,7 +182,7 @@ public class SuperFeedrAtomChannel implements PubSubContentHandler, AddEventTrig
     public void handle(InputStream body, Map<String, List<String>> headers) {
         try {
             Document doc = builder.parse(body);
-            logger.debug("Received doc: " + prettyPrint(doc, doc)); // very expensive, so comment out when not required
+            //logger.debug("Received doc: " + prettyPrint(doc, doc)); // very expensive, so comment out when not required
             Node status = (Node) getStatusPath().evaluate(doc, XPathConstants.NODE);
             NodeList nodes = (NodeList) getEntryPath().evaluate(doc, XPathConstants.NODESET);
             for (int i = 0; i < nodes.getLength(); i++) {
@@ -205,17 +206,15 @@ public class SuperFeedrAtomChannel implements PubSubContentHandler, AddEventTrig
     /**
      * Method to create an event from an item node in the Atom feed.
      *
-     * Subclasses should override if the default event header creation is inappropriate.
-     *
      * @param item
      * @param status
      * @return New event or null if event could not be created
      */
     protected Event makeEvent(Node item, Node status) {
         try {
-            String id = xpath.evaluate("id", item);
-            Date timestamp = javax.xml.bind.DatatypeConverter.parseDateTime(xpath.evaluate("published", item)).getTime();
-            Source source = Sources.cache.getSourceByName(new URL(xpath.evaluate("@feed", status)).getHost());
+            String id = getId(item, status);
+            Date timestamp = getTimestamp(item, status);
+            Source source = getSource(item, status);
             count++;
             return new XmlEventImpl(new JdoHeader(timestamp, source, id), item);
         } catch (XPathExpressionException exc) {
@@ -223,11 +222,55 @@ public class SuperFeedrAtomChannel implements PubSubContentHandler, AddEventTrig
             errors++;
             return null;
         } catch (MalformedURLException exc) {
-            logger.error("Bad link href: ", exc);
+            logger.error("Bad feed href: ", exc);
             errors++;
             return null;
         }
     }
+
+    /**
+     * Method to create an id from an item node and/or the status node of the document.
+     *
+     * Default behaviour is to extract the 'id' element of the entry. Subclasses should override if this is not
+     * appropriate.
+     *
+     * @param item
+     * @param status
+     * @return id for this item
+     * @throws XPathExpressionException
+     */
+    protected String getId(Node item, Node status) throws XPathExpressionException {
+        return xpath.evaluate("id", item);
+    }
+
+    /**
+     * Method to extract a suitable timestamp from an item node and/or the status node of the document
+     *
+     * Default behaviour is to extract the 'published' element of the entry and parse using the
+     * javax.xml.bind.DatatypeConverter. Subclasses should override if this is not appropriate.
+     *
+     * @param item
+     * @param status
+     * @return timestamp for this item
+     * @throws XPathExpressionException
+     */
+    protected Date getTimestamp(Node item, Node status) throws XPathExpressionException {
+        return DatatypeConverter.parseDateTime(xpath.evaluate("published", item)).getTime();
+    }
+
+    /**
+     * Method to extract a suitable timestamp from an item node and/or the status node of the document
+     *
+     * Default behaviour is to extract the '@feed' attribute of the status (a URL) and extract the domain name
+     * from the feed url. Subclasses should override if this is not appropriate.
+     *
+     * @param item
+     * @param status
+     */
+    protected Source getSource(Node item, Node status) throws XPathExpressionException, MalformedURLException {
+        return Sources.cache.getSourceByName(new URL(xpath.evaluate("@feed", status)).getHost());
+    }
+
 
     @Override
     public void registerAction(AddEventAction action) {
@@ -239,7 +282,7 @@ public class SuperFeedrAtomChannel implements PubSubContentHandler, AddEventTrig
         delegate.unregisterAction(action);
     }
 
-    public String prettyPrint(Document doc, Node node) {
+    public static String prettyPrint(Document doc, Node node) {
         DOMImplementationLS ls = (DOMImplementationLS) doc.getImplementation().getFeature("LS", "3.0");
         LSSerializer serializer = ls.createLSSerializer();
         serializer.getDomConfig().setParameter("format-pretty-print", Boolean.TRUE);
