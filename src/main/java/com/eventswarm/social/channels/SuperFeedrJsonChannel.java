@@ -105,6 +105,7 @@ public class SuperFeedrJsonChannel implements PubSubContentHandler, AddEventTrig
     public void handle(InputStream body, Map<String, List<String>> headers) {
         try {
             JSONObject object = new JSONObject(new JSONTokener(body));
+            //logger.debug("JSON received was: " + object.toString(2));
             JSONArray items = object.getJSONArray("items");
             Source source =  getSource(object);
             for (int i=0; i < items.length(); i++) {
@@ -114,7 +115,7 @@ public class SuperFeedrJsonChannel implements PubSubContentHandler, AddEventTrig
                     errors++;
                     logger.error("Could not extract id from JSON item");
                 } else {
-                    Header header = new JdoHeader(new Date(item.getLong("published")*1000), source, getId(item));
+                    Header header = new JdoHeader(getTimestamp(item), source, getId(item));
                     delegate.fire(new OrgJsonEvent(header, item));
                     count++;
                 }
@@ -127,15 +128,22 @@ public class SuperFeedrJsonChannel implements PubSubContentHandler, AddEventTrig
     /**
      * Extract the feed host from the notification, falling back on superfeedr if we can't parse the feed URI
      *
+     * This default implementation uses the domain name from the status/feed url in the JSON notification, and
+     * falls back on the @DEFAULT_SOURCE value if this is not available. Subclasses should override if this strategy
+     * is unsuitable.
+     *
      * @param notification
      * @return
      */
-    private Source getSource(JSONObject notification) {
+    protected Source getSource(JSONObject notification) {
         try {
             URI uri = new URI(notification.getJSONObject("status").getString("feed"));
             return Sources.cache.getSourceByName(uri.getHost());
         } catch (URISyntaxException exc) {
             logger.info ("Cannot extract feed host as source, using superfeedr.com");
+            return Sources.cache.getSourceByName(DEFAULT_SOURCE);
+        } catch (JSONException exc) {
+            logger.error("Error extracting feed URL", exc);
             return Sources.cache.getSourceByName(DEFAULT_SOURCE);
         }
     }
@@ -146,13 +154,36 @@ public class SuperFeedrJsonChannel implements PubSubContentHandler, AddEventTrig
      * @param item JSON object from the items list in the notification
      * @return item id or null if this is an update (EventSwarm will assign a UUID if id is null)
      */
-    private String getId(JSONObject item) {
-        if (item.has("updated") && item.getLong("published") != item.getLong("updated")) {
-            // this is an item updated, let EventSwarm assign an id by returning null
-            logger.info("Item has been updated, using UUID instead of item id");
-            return null;
-        } else {
-            return item.getString("id");
+    protected String getId(JSONObject item) {
+        try {
+            if (item.has("updated") && item.getLong("published") < item.getLong("updated")) {
+                // this is an item updated, let EventSwarm assign an id by returning null
+                logger.info("Item has been updated, using UUID instead of item id");
+                return null;
+            } else {
+                return item.getString("id");
+            }
+        } catch (JSONException exc) {
+            logger.error("Error extracting id from item", exc);
+            throw exc;
+        }
+    }
+
+    /**
+     * Method to extract a suitable timestamp from an item
+     *
+     * Default behaviour is to extract the 'published' element of the entry and create a millisecond timestamp
+     * by multiplying by 1000. Subclasses should override if this is not appropriate.
+     *
+     * @param item
+     * @return timestamp for this item
+     */
+    protected Date getTimestamp(JSONObject item) throws JSONException {
+        try {
+            return new Date(item.getLong("published")*1000);
+        } catch (JSONException exc) {
+            logger.error("Error extracting timestamp from item", exc);
+            throw exc;
         }
     }
 
