@@ -167,10 +167,14 @@ public class SuperFeedrAtomChannel implements PubSubContentHandler, AddEventTrig
      * As per the interface contract, extract events from the notification and pass them onwards to downstream
      * actions.
      *
+     * @param subs_id
      * @param body InputStream for reading the HTTP request body
      * @param headers Map of headers
      */
-    public void handle(InputStream body, Map<String, List<String>> headers) {
+    public void handle(String subs_id, InputStream body, Map<String, List<String>> headers) {
+        if (!subscriptions.containsKey(subs_id)) {
+            logger.warn("Received content for unrecognised subscription: " + subs_id);
+        }
         try {
             Document doc = builder.parse(body);
             //logger.debug("Received doc: " + prettyPrint(doc, doc)); // very expensive, so comment out when not required

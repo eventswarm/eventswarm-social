@@ -4,7 +4,6 @@ import com.eventswarm.AddEventAction;
 import com.eventswarm.AddEventTrigger;
 import com.eventswarm.events.Event;
 import com.eventswarm.events.XmlEvent;
-import com.eventswarm.events.jdo.OrgJsonEvent;
 import org.apache.log4j.BasicConfigurator;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -47,7 +46,7 @@ public class SuperFeedrAtomChannelTest implements AddEventAction {
         SuperFeedrAtomChannel instance = new SuperFeedrAtomChannel(subscriber);
         instance.registerAction(this);
         InputStream stream = this.getClass().getClassLoader().getResourceAsStream("fixtures/superfeedr.xml");
-        instance.handle(stream, null);
+        instance.handle("1234", stream, null);
         assertEquals(2, events.size());
         assertEquals("http://push-pub.appspot.com/feed/5723348596162560", events.get(0).getHeader().getEventId());
         assertEquals("push-pub.appspot.com", events.get(0).getHeader().getSource().getSourceId());

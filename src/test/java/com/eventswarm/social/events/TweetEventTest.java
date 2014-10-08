@@ -53,7 +53,7 @@ public class TweetEventTest {
     @Test
     public void testGetTweetId() throws Exception {
         TweetEvent instance = (new StatusReader()).getFirstEvent(this.getClass().getClassLoader().getResourceAsStream("fixtures/single2hash1mention.json"));
-        assertEquals(384879482202370048L, instance.getTweetId());
+        assertEquals(384879482202370048L, instance.getTweetId().longValue());
     }
 
     @Test

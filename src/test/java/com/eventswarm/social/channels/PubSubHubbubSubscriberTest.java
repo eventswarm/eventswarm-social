@@ -92,7 +92,7 @@ public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHan
         System.out.println("PubSubHubub subscription id: " + id);
         PubSubContentHandler other = new PubSubContentHandler() {
             @Override
-            public void handle(InputStream body, Map<String, List<String>> headers) {
+            public void handle(String subs_id, InputStream body, Map<String, List<String>> headers) {
                 // do nothing
             }
         };
@@ -260,7 +260,7 @@ public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHan
     }
 
     @Override
-    public void handle(InputStream body, Map<String, List<String>> headers) {
+    public void handle(String subs_id, InputStream body, Map<String, List<String>> headers) {
         try {
             hubContent = readStream(body);
             System.out.println("Received content:" + hubContent);

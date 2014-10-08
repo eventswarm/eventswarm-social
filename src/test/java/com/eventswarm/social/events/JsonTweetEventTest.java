@@ -45,7 +45,7 @@ public class JsonTweetEventTest {
     @Test
     public void testGetTweetId() throws Exception {
         JsonTweetEvent instance = (new JsonEventReader()).getFirstEvent(this.getClass().getClassLoader().getResourceAsStream("fixtures/single2hash1mention.json"));
-        assertEquals(384879482202370048L, instance.getTweetId());
+        assertEquals(384879482202370048L, instance.getTweetId().longValue());
     }
 
     @Test

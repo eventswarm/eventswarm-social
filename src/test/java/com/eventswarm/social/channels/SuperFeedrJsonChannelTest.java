@@ -43,7 +43,7 @@ public class SuperFeedrJsonChannelTest implements AddEventAction {
         SuperFeedrJsonChannel instance = new SuperFeedrJsonChannel(null);
         instance.registerAction(this);
         InputStream stream = this.getClass().getClassLoader().getResourceAsStream("fixtures/superfeedr.json");
-        instance.handle(stream, null);
+        instance.handle("1234", stream, null);
         assertEquals(2, events.size());
         assertEquals("domain.tld:09/05/03-1", events.get(0).getHeader().getEventId());
         assertEquals("domain.tld", events.get(0).getHeader().getSource().getSourceId());

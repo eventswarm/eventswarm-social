@@ -170,9 +170,10 @@ public class SuperFeedrSubscriber extends PubSubHubbubSubscriber {
     public String subscribeAndRetrieve(PubSubContentHandler handler, URL topic, String after) throws PubSubException {
         try {
             logger.info("Sending " + HTTP_POST + " request to " + getHubUrl().toString() + " to subscribe and retrieve from " + topic.toString());
+            String id = makeId(topic, null);
             HttpURLConnection con = getConnection();
             OutputStreamWriter out = new OutputStreamWriter(con.getOutputStream());
-            addParam(out, CALLBACK + "=" + encode(callbackUrl));
+            addParam(out, CALLBACK + "=" + encode(callBack(id).toExternalForm()));
             addParam(out, AMP + TOPIC + "=" + encode(topic.toString()));
             addParam(out, AMP + MODE + "=" + SubRequest.subscribe.toString());
             addParam(out, AMP + "format=" + options.get(PROPS_FORMAT));
@@ -181,6 +182,8 @@ public class SuperFeedrSubscriber extends PubSubHubbubSubscriber {
             if (after != null) {
                 addParam(out, AMP + "after=" + encode(after));
             }
+            super.subs.put(id, topic);
+            super.handlers.put(id, handler);
             out.close();
             int code = con.getResponseCode();
             if (code > 299) {
@@ -188,14 +191,13 @@ public class SuperFeedrSubscriber extends PubSubHubbubSubscriber {
                 InputStream in = con.getErrorStream();
                 if (in == null) in = con.getInputStream(); // might have returned the wrong code
                 String message = "Error in HTTP response, content was: " + readStream(in);
+                super.subs.remove(id);
+                super.handlers.remove(id);
                 logger.error(message);
                 throw new PubSubException(message);
             } else {
                 logger.debug("Received HTTP response with code " + Integer.toString(code));
-                String id = makeId(topic, null);
-                super.subs.put(id, topic);
-                super.handlers.put(id, handler);
-                handler.handle(con.getInputStream(), con.getHeaderFields());
+                handler.handle(id, con.getInputStream(), con.getHeaderFields());
                 return id;
             }
         } catch (Exception exc) {

@@ -115,7 +115,11 @@ public class PubSubHubbubSubscriber implements HttpHandler {
             // new subscription, add handler and subscribe
             handlers.put(id, handler);
             subs.put(id, topic); // update the subscription to add the new topic URL
-            send(SubRequest.subscribe, topic, callBack(id), other);
+            if (!send(SubRequest.subscribe, topic, callBack(id), other)) {
+                // send failed, so drop the subscription and handler
+                handlers.remove(id);
+                subs.remove(id);
+            }
         } else if (handlers.get(id) == handler) {
             return id;
         } else {
@@ -253,6 +257,8 @@ public class PubSubHubbubSubscriber implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) {
         URI uri = exchange.getRequestURI();
+        String subs_id = getId(uri);
+        logger.debug("Received content for subscription id: " + subs_id);
         try {
 
             if (exchange.getRequestMethod().equals(HTTP_GET)) {
@@ -262,8 +268,14 @@ public class PubSubHubbubSubscriber implements HttpHandler {
                 // this is a notification, call the content handlers
                 logger.debug("Received content at " + uri.toString() + " from " + exchange.getRemoteAddress().getHostName());
                 // TODO implement some verification of link headers to verify that this is a valid request
-                handlers.get(getId(uri)).handle(exchange.getRequestBody(), exchange.getRequestHeaders());
-                respond(exchange, "", 201);
+                PubSubContentHandler handler = handlers.get(subs_id);
+                if (handler == null) {
+                    logger.warn("Received content for non-existent subscription, discarding");
+                    respond(exchange, "", 201);
+                } else {
+                    handler.handle(subs_id, exchange.getRequestBody(), exchange.getRequestHeaders());
+                    respond(exchange, "", 201);
+                }
             } else {
                 logger.error("Unhandled request method: " + exchange.getRequestMethod());
                 respond(exchange, "", 500);
@@ -365,7 +377,7 @@ public class PubSubHubbubSubscriber implements HttpHandler {
      * @return
      * @throws PubSubException
      */
-    private URL callBack(String id) throws PubSubException {
+    protected URL callBack(String id) throws PubSubException {
         try {
             return new URL(pushUrl + "/" + encode(id));
         } catch (MalformedURLException exc) {
@@ -380,7 +392,7 @@ public class PubSubHubbubSubscriber implements HttpHandler {
      * @param text
      * @return
      */
-    protected String encode(String text) {
+    protected static String encode(String text) {
         try {
             return URLEncoder.encode(text, ENCODING);
         } catch (UnsupportedEncodingException exc) {
@@ -396,7 +408,7 @@ public class PubSubHubbubSubscriber implements HttpHandler {
      * @param text
      * @return
      */
-    protected String decode(String text) {
+    protected static String decode(String text) {
         try {
             return URLDecoder.decode(text, "UTF8");
         } catch (UnsupportedEncodingException exc) {
@@ -457,7 +469,7 @@ public class PubSubHubbubSubscriber implements HttpHandler {
         out.write(param);
     }
 
-    protected String readStream(InputStream in) throws IOException {
+    protected static String readStream(InputStream in) throws IOException {
         Scanner scanner = new Scanner(in);
         StringBuilder result = new StringBuilder();
         while (scanner.hasNextLine()) {

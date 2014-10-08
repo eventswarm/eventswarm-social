@@ -99,10 +99,14 @@ public class SuperFeedrJsonChannel implements PubSubContentHandler, AddEventTrig
      * As per the interface contract, extract events from the notification and pass them onwards to downstream
      * actions.
      *
+     * @param subs_id
      * @param body InputStream for reading the HTTP request body
      * @param headers Map of headers
      */
-    public void handle(InputStream body, Map<String, List<String>> headers) {
+    public void handle(String subs_id, InputStream body, Map<String, List<String>> headers) {
+        if (!subscriptions.containsKey(subs_id)) {
+            logger.warn("Received content for unrecognised subscription: " + subs_id);
+        }
         try {
             JSONObject object = new JSONObject(new JSONTokener(body));
             //logger.debug("JSON received was: " + object.toString(2));

@@ -20,8 +20,9 @@ public interface PubSubContentHandler {
      * Note that this interface assumes the body will be string encoded. Might need to revisit if we have any
      * issues here.
      *
+     * @param subs_id
      * @param body InputStream for reading the HTTP request body
      * @param headers Map of headers
      */
-    public void handle(InputStream body, Map<String, List<String>> headers);
+    public void handle(String subs_id, InputStream body, Map<String, List<String>> headers);
 }
