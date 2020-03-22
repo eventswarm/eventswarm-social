@@ -13,7 +13,6 @@ import org.apache.log4j.Logger;
 
 import com.eventswarm.AddEventTrigger;
 import com.eventswarm.AddEventAction;
-import com.eventswarm.events.Keywords;
 import com.eventswarm.events.Event;
 import com.eventswarm.social.events.TweetEvent;
 
@@ -176,7 +175,6 @@ public class StatusListenerChannel
         this.errorCount++;
     }
 
-    @Override
     public void onStallWarning(StallWarning stallWarning) {
         log.warn(stallWarning.getMessage());
     }

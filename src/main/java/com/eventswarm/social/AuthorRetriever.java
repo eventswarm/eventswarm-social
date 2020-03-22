@@ -21,7 +21,6 @@ public class AuthorRetriever implements ValueRetriever<String> {
         super();
     }
 
-    @Override
     public String getValue(Event event) {
         return eventKey.getKey(event);
     }

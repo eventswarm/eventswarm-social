@@ -2,7 +2,6 @@ package com.eventswarm.social.events;
 
 import com.eventswarm.social.helpers.JsonEventReader;
 import org.junit.Test;
-import twitter4j.Status;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -2,6 +2,7 @@ package com.eventswarm.social.channels;
 
 import com.eventswarm.AddEventAction;
 import com.eventswarm.AddEventTrigger;
+import com.eventswarm.channels.HttpContentHandler;
 import com.eventswarm.events.Header;
 import com.eventswarm.events.Source;
 import com.eventswarm.events.Sources;
@@ -27,8 +28,8 @@ import java.util.*;
  * User: andyb
  * To change this template use File | Settings | File Templates.
  */
-public class SuperFeedrJsonChannel implements PubSubContentHandler, AddEventTrigger {
-    private EventTriggerDelegate delegate;
+public class SuperFeedrJsonChannel implements HttpContentHandler, AddEventTrigger {
+    private EventTriggerDelegate<AddEventTrigger,AddEventAction> delegate;
     private SuperFeedrSubscriber subscriber;
     private Map<String,URL> subscriptions;
     private long count;
@@ -45,7 +46,7 @@ public class SuperFeedrJsonChannel implements PubSubContentHandler, AddEventTrig
      */
     public SuperFeedrJsonChannel(SuperFeedrSubscriber subscriber) {
         this.subscriber = subscriber;
-        this.delegate = new EventTriggerDelegate(this);
+        this.delegate = new EventTriggerDelegate<AddEventTrigger,AddEventAction>(this);
         this.subscriptions = new HashMap<String,URL>();
     }
 
@@ -191,12 +192,10 @@ public class SuperFeedrJsonChannel implements PubSubContentHandler, AddEventTrig
         }
     }
 
-    @Override
     public void registerAction(AddEventAction action) {
         delegate.registerAction(action);
     }
 
-    @Override
     public void unregisterAction(AddEventAction action) {
         delegate.unregisterAction(action);
     }

@@ -36,7 +36,6 @@ public class JsonStatusListenerChannelTest implements AddEventAction {
         }
     }
 
-    @Override
     public void execute(AddEventTrigger addEventTrigger, Event event) {
         System.out.println("Tweet delivered");
         synchronized(this) {

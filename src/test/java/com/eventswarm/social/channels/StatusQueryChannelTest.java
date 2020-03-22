@@ -9,7 +9,6 @@ import static org.junit.Assert.*;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
@@ -19,7 +18,7 @@ import java.util.Properties;
  * To change this template use File | Settings | File Templates.
  */
 public class StatusQueryChannelTest implements AddEventAction {
-    final ArrayList events = new ArrayList();
+    final ArrayList<Event> events = new ArrayList<Event>();
     TwitterFactory factory;
 
     @Before

@@ -1,14 +1,9 @@
 package com.eventswarm.social.channels;
 
 import com.eventswarm.events.Event;
-import com.eventswarm.events.jdo.OrgJsonPart;
-import com.eventswarm.events.jdo.OrgJsonEvent;
 import com.eventswarm.social.events.JsonTweetEvent;
 import org.apache.log4j.Logger;
 import twitter4j.Status;
-import com.eventswarm.channels.JsonChannel;
-import com.eventswarm.channels.JsonEventFactory;
-import twitter4j.StatusListener;
 import twitter4j.TwitterStreamFactory;
 
 /**
@@ -25,7 +20,7 @@ import twitter4j.TwitterStreamFactory;
  * User: andyb
  * To change this template use File | Settings | File Templates.
  */
-public class JsonStatusListenerChannel extends StatusListenerChannel implements StatusListener {
+public class JsonStatusListenerChannel extends StatusListenerChannel {
 
     private static Logger log = Logger.getLogger(JsonStatusListenerChannel.class);
 

@@ -1,11 +1,8 @@
 package com.eventswarm.social.helpers;
 
-import com.eventswarm.events.Event;
 import com.eventswarm.social.channels.StatusListenerChannel;
-import com.eventswarm.social.events.JsonTweetEvent;
 import org.apache.log4j.Logger;
 import twitter4j.Status;
-import twitter4j.StatusListener;
 import twitter4j.TwitterObjectFactory;
 import twitter4j.TwitterStreamFactory;
 
@@ -19,7 +16,7 @@ import twitter4j.TwitterStreamFactory;
  * Time: 2:01 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CaptureJSON extends StatusListenerChannel implements StatusListener {
+public class CaptureJSON extends StatusListenerChannel {
 
     private static Logger log = Logger.getLogger(CaptureJSON.class);
     private boolean stop = false;

@@ -2,6 +2,7 @@ package com.eventswarm.social.channels;
 
 import com.eventswarm.AddEventAction;
 import com.eventswarm.AddEventTrigger;
+import com.eventswarm.channels.HttpContentHandler;
 import com.eventswarm.events.Event;
 import com.eventswarm.events.Source;
 import com.eventswarm.events.Sources;
@@ -40,8 +41,8 @@ import javax.xml.xpath.*;
  * User: andyb
  * To change this template use File | Settings | File Templates.
  */
-public class SuperFeedrAtomChannel implements PubSubContentHandler, AddEventTrigger {
-    private EventTriggerDelegate delegate;
+public class SuperFeedrAtomChannel implements HttpContentHandler, AddEventTrigger {
+    private EventTriggerDelegate<AddEventTrigger,AddEventAction> delegate;
     private SuperFeedrSubscriber subscriber;
     private Map<String,URL> subscriptions;
     private DocumentBuilder builder;
@@ -68,7 +69,7 @@ public class SuperFeedrAtomChannel implements PubSubContentHandler, AddEventTrig
     public SuperFeedrAtomChannel(SuperFeedrSubscriber subscriber) {
         subscriber.getOptions().put(SuperFeedrSubscriber.PROPS_FORMAT, "atom");
         this.subscriber = subscriber;
-        this.delegate = new EventTriggerDelegate(this);
+        this.delegate = new EventTriggerDelegate<AddEventTrigger,AddEventAction>(this);
         this.subscriptions = new HashMap<String,URL>();
         makeBuilder();
         xpath = XPathFactory.newInstance().newXPath();
@@ -286,12 +287,10 @@ public class SuperFeedrAtomChannel implements PubSubContentHandler, AddEventTrig
     }
 
 
-    @Override
     public void registerAction(AddEventAction action) {
         delegate.registerAction(action);
     }
 
-    @Override
     public void unregisterAction(AddEventAction action) {
         delegate.unregisterAction(action);
     }

@@ -1,7 +1,5 @@
 package com.eventswarm.social.channels;
 
-import com.eventswarm.AddEventTrigger;
-import com.eventswarm.channels.AbstractChannel;
 import com.eventswarm.events.Event;
 import com.eventswarm.social.events.JsonTweetEvent;
 import twitter4j.*;

@@ -9,11 +9,9 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import static org.junit.Assert.assertNotNull;
 
-import com.eventswarm.social.helpers.ReplayJSON;
 import twitter4j.Status;
 import twitter4j.StatusListener;
 
-import java.io.FileReader;
 import java.io.InputStreamReader;
 
 /**
@@ -23,7 +21,7 @@ import java.io.InputStreamReader;
  * Time: 1:54 PM
  * To change this template use File | Settings | File Templates.
  */
-public class ReplayJSONTest extends StatusListenerChannel implements StatusListener, AddEventAction {
+public class ReplayJSONTest extends StatusListenerChannel implements AddEventAction {
     private Status tweet;
     private Event event;
     private int count = 0;
@@ -59,7 +57,6 @@ public class ReplayJSONTest extends StatusListenerChannel implements StatusListe
         }
     }
 
-    @Override
     public void execute(AddEventTrigger addEventTrigger, Event event) {
         synchronized (this) {
             count++;
