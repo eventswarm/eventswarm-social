@@ -1,5 +1,6 @@
 package com.eventswarm.social.channels;
 
+import com.eventswarm.channels.HttpContentHandler;
 import com.sun.net.httpserver.*;
 import org.apache.log4j.Logger;
 
@@ -36,7 +37,7 @@ import java.util.concurrent.Executor;
 public class PubSubHubbubSubscriber implements HttpHandler {
     private URL hubUrl;
     private String pushUrl;
-    protected Map<String,PubSubContentHandler> handlers; // protected so we can access in test
+    protected Map<String,HttpContentHandler> handlers; // protected so we can access in test
     protected Map<String,URL> subs, unsubs; // protected so we can access in test
     protected Map<String,Boolean> confirmed; // record subscribe confirmations
     private int port;
@@ -78,7 +79,7 @@ public class PubSubHubbubSubscriber implements HttpHandler {
         this.hubUrl = hubUrl;
         // strip trailing '/' from URL if present
         this.pushUrl = pushUrl;
-        this.handlers = new HashMap<String,PubSubContentHandler>();
+        this.handlers = new HashMap<String,HttpContentHandler>();
         this.subs = new HashMap<String, URL>();
         this.unsubs = new HashMap<String, URL>();
         this.confirmed = new HashMap<String,Boolean>();
@@ -104,12 +105,12 @@ public class PubSubHubbubSubscriber implements HttpHandler {
      * if any attempt is made to subscribe a second handler on the same topic. Duplicate requests will be ignored
      * (i.e. if you're already registered as a handler for this topic + params, nothing will change.
      *
-     * @param handler A PubSubContentHandler implementation to handle notifications for the topic
+     * @param handler A HttpContentHandler implementation to handle notifications for the topic
      * @param topic Topic URL to be monitored by the hub, caller is responsible for ensuring hub can monitor this URL
      * @param other Other parameters to send with the subscription request (in addition to topic, callback and mode)
      * @return id associated with topic or null if topic is already subscribed
      */
-    public String subscribe(PubSubContentHandler handler, URL topic, Map<String,String> other) throws PubSubException {
+    public String subscribe(HttpContentHandler handler, URL topic, Map<String,String> other) throws PubSubException {
         String id = makeId(topic, other);
         if (!handlers.containsKey(id)) {
             // new subscription, add handler and subscribe
@@ -157,7 +158,7 @@ public class PubSubHubbubSubscriber implements HttpHandler {
      * @param handler Handler to unsubscribe
      * @throws PubSubHubbubSubscriber.PubSubException
      */
-    public void unsubscribe(String id, PubSubContentHandler handler) throws PubSubException {
+    public void unsubscribe(String id, HttpContentHandler handler) throws PubSubException {
         if (handlers.get(id) == handler) {
             // this is the right handler for the subscription, so unsubscribe
             unsubscribe(id);
@@ -254,7 +255,6 @@ public class PubSubHubbubSubscriber implements HttpHandler {
      *
      * @param exchange
      */
-    @Override
     public void handle(HttpExchange exchange) {
         URI uri = exchange.getRequestURI();
         String subs_id = getId(uri);
@@ -268,7 +268,7 @@ public class PubSubHubbubSubscriber implements HttpHandler {
                 // this is a notification, call the content handlers
                 logger.debug("Received content at " + uri.toString() + " from " + exchange.getRemoteAddress().getHostName());
                 // TODO implement some verification of link headers to verify that this is a valid request
-                PubSubContentHandler handler = handlers.get(subs_id);
+                HttpContentHandler handler = handlers.get(subs_id);
                 if (handler == null) {
                     logger.warn("Received content for non-existent subscription, discarding");
                     respond(exchange, "", 201);
@@ -475,6 +475,7 @@ public class PubSubHubbubSubscriber implements HttpHandler {
         while (scanner.hasNextLine()) {
             result.append(scanner.nextLine());
         }
+        scanner.close();
         return result.toString();
     }
 
@@ -504,6 +505,8 @@ public class PubSubHubbubSubscriber implements HttpHandler {
      * Simple exception class to wrap exceptions
      */
     public static class PubSubException extends Exception {
+        private static final long serialVersionUID = 1L;
+
         public PubSubException(String message) {
             super(message);
         }

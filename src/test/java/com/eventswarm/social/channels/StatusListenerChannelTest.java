@@ -15,15 +15,9 @@ import java.util.logging.Logger;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
-import twitter4j.Status;
-import twitter4j.StatusDeletionNotice;
-import org.apache.log4j.*;
-import twitter4j.TwitterFactory;
 import twitter4j.TwitterStreamFactory;
-import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
 /**
@@ -32,16 +26,10 @@ import twitter4j.conf.ConfigurationBuilder;
  */
 public class StatusListenerChannelTest implements AddEventAction {
 
-    final ArrayList events = new ArrayList();
+    final ArrayList<Event> events = new ArrayList<Event>();
     TwitterStreamFactory factory;
 
     public StatusListenerChannelTest() {
-    }
-
-    @BeforeClass
-    public static void setUpClass() throws Exception {
-        // create a console appender so we can collect log output
-        BasicConfigurator.configure();
     }
 
     @AfterClass

@@ -94,7 +94,6 @@ public class TweetEvent extends JdoEvent implements Keywords, OrderedKeywords, T
         return this.orderedKeywords.get();
     }
 
-    @Override
     public Long getTweetId() {
         return this.tweet.getId();
     }
@@ -121,7 +120,6 @@ public class TweetEvent extends JdoEvent implements Keywords, OrderedKeywords, T
         return this.retweetOf;
     }
 
-    @Override
     public String getStatusText() {
         return this.tweet.getText();
     }
@@ -165,7 +163,6 @@ public class TweetEvent extends JdoEvent implements Keywords, OrderedKeywords, T
      *
      * @return
      */
-    @Override
     public Set<String> getHashtags() {
         if (hashtags == null) {
             Set<String> values = new HashSet<String>();
@@ -182,7 +179,6 @@ public class TweetEvent extends JdoEvent implements Keywords, OrderedKeywords, T
      *
      * @return
      */
-    @Override
     public Set<String> getCashtags() {
         if (cashtags == null) {
             Set<String> values = new HashSet<String>();
@@ -201,7 +197,6 @@ public class TweetEvent extends JdoEvent implements Keywords, OrderedKeywords, T
      *
      * @return
      */
-    @Override
     public String getAuthor() {
         return getStatus().getUser().getScreenName().toLowerCase();
     }
@@ -211,7 +206,6 @@ public class TweetEvent extends JdoEvent implements Keywords, OrderedKeywords, T
      *
      * @return
      */
-    @Override
     public Set<String> getMentions() {
         if (mentions == null) {
             Set<String> values = new HashSet<String>();
@@ -223,7 +217,6 @@ public class TweetEvent extends JdoEvent implements Keywords, OrderedKeywords, T
         return mentions.get();
     }
 
-    @Override
     public boolean isRetweet() {
         return getStatus().isRetweet();
     }

@@ -1,5 +1,6 @@
 package com.eventswarm.social.channels;
 
+import com.eventswarm.channels.HttpContentHandler;
 import org.apache.log4j.Logger;
 
 import java.io.IOException;
@@ -167,7 +168,7 @@ public class SuperFeedrSubscriber extends PubSubHubbubSubscriber {
      * @return ID associated with subscription
      * @throws PubSubException
      */
-    public String subscribeAndRetrieve(PubSubContentHandler handler, URL topic, String after) throws PubSubException {
+    public String subscribeAndRetrieve(HttpContentHandler handler, URL topic, String after) throws PubSubException {
         try {
             logger.info("Sending " + HTTP_POST + " request to " + getHubUrl().toString() + " to subscribe and retrieve from " + topic.toString());
             String id = makeId(topic, null);
@@ -176,7 +177,9 @@ public class SuperFeedrSubscriber extends PubSubHubbubSubscriber {
             addParam(out, CALLBACK + "=" + encode(callBack(id).toExternalForm()));
             addParam(out, AMP + TOPIC + "=" + encode(topic.toString()));
             addParam(out, AMP + MODE + "=" + SubRequest.subscribe.toString());
-            addParam(out, AMP + "format=" + options.get(PROPS_FORMAT));
+            if (options.get(PROPS_FORMAT) != null) {
+                addParam(out, AMP + "format=" + options.get(PROPS_FORMAT));
+            }
             addParam(out, AMP + "retrieve=true");
             addParam(out, AMP + "count=50"); // retrieve as many as we can, no point in calling twice
             if (after != null) {
@@ -232,7 +235,7 @@ public class SuperFeedrSubscriber extends PubSubHubbubSubscriber {
      * @return
      * @throws PubSubException
      */
-    public String subscribe(PubSubContentHandler handler, URL topic) throws PubSubException {
+    public String subscribe(HttpContentHandler handler, URL topic) throws PubSubException {
         logger.debug("Subscribing with options: " + options.toString());
         return super.subscribe(handler, topic, options);
     }

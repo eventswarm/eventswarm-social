@@ -1,16 +1,8 @@
 package com.eventswarm.social.events;
 
-import com.eventswarm.AddEventAction;
-import com.eventswarm.AddEventTrigger;
-import com.eventswarm.events.Event;
-import com.eventswarm.social.helpers.ReplayJSON;
 import com.eventswarm.social.helpers.StatusReader;
-import twitter4j.StallWarning;
 import twitter4j.Status;
-import twitter4j.StatusDeletionNotice;
-import twitter4j.StatusListener;
 
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;

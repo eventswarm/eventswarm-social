@@ -6,7 +6,6 @@ import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
 import twitter4j.StatusListener;
 
-import java.io.FileReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -38,32 +37,26 @@ public class StatusReader implements StatusListener {
         return new TweetEvent(statuses.get(statuses.size()-1));
     }
 
-    @Override
     public void onStatus(Status status) {
         statuses.add(status);
     }
 
-    @Override
     public void onDeletionNotice(StatusDeletionNotice statusDeletionNotice) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
     public void onTrackLimitationNotice(int i) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
     public void onScrubGeo(long l, long l2) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
     public void onStallWarning(StallWarning stallWarning) {
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
     public void onException(Exception e) {
         //To change body of implemented methods use File | Settings | File Templates.
     }

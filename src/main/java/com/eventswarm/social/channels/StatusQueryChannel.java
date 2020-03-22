@@ -1,6 +1,5 @@
 package com.eventswarm.social.channels;
 
-import com.eventswarm.AddEventTrigger;
 import com.eventswarm.channels.AbstractChannel;
 import com.eventswarm.events.Event;
 import com.eventswarm.social.events.TweetEntities;
@@ -19,7 +18,7 @@ import java.util.Iterator;
  * Time: 11:38 AM
  * To change this template use File | Settings | File Templates.
  */
-public class StatusQueryChannel extends AbstractChannel implements AddEventTrigger {
+public class StatusQueryChannel extends AbstractChannel {
     private Query query;
     private QueryResult result;
     protected Iterator<Status> iterator;

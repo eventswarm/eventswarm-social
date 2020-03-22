@@ -1,11 +1,12 @@
 package com.eventswarm.social.channels;
 
-import org.apache.log4j.BasicConfigurator;
+import com.eventswarm.channels.HttpContentHandler;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 import org.jsoup.Jsoup;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 import static org.hamcrest.CoreMatchers.*;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
 
@@ -26,8 +28,10 @@ import static org.junit.Assert.*;
  * User: andyb
  * To change this template use File | Settings | File Templates.
  */
-public class SuperFeedrSubscriberTest implements PubSubContentHandler {
+public class SuperFeedrSubscriberTest implements HttpContentHandler {
     private static enum CONTENT_TYPE {atom, json, html};
+    private static Pattern JSON_START = Pattern.compile("^\\s*\\{");
+    private static Pattern XML_START = Pattern.compile("^\\s*<\\?xml");
 
     private String hubContent;
     private Exception notifyFailed;
@@ -40,7 +44,6 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
 
     @BeforeClass
     public static void setup() throws Exception {
-        BasicConfigurator.configure();
         builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
     }
 
@@ -71,6 +74,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         assertEquals("blahblah", instance.getPassword());
     }
 
+    @Ignore("Needs working callback URL in $PROJECT_HOME/../superfeedr.properties")
     @Test
     public void testSubscribe() throws Exception {
         SuperFeedrSubscriber instance = null;
@@ -88,6 +92,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         }
     }
 
+    @Ignore("Needs working callback URL in $PROJECT_HOME/../superfeedr.properties")
     @Test
     public void testSubscribeAndRetrieveJson() throws Exception {
         SuperFeedrSubscriber instance = null;
@@ -105,6 +110,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         }
     }
 
+    @Ignore("Needs working callback URL in $PROJECT_HOME/../superfeedr.properties")
     @Test
     public void testSubscribeAndRetrieveJsonWait() throws Exception {
         SuperFeedrSubscriber instance = null;
@@ -125,6 +131,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         }
     }
 
+    @Ignore("Needs working callback URL in $PROJECT_HOME/../superfeedr.properties")
     @Test
     public void testSubscribeAndRetrieveAtom() throws Exception {
         SuperFeedrSubscriber instance = null;
@@ -143,6 +150,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         }
     }
 
+    @Ignore("Needs working callback URL in $PROJECT_HOME/../superfeedr.properties")
     @Test
     public void testSubscribeAndRetrieveAtomWait() throws Exception {
         SuperFeedrSubscriber instance = null;
@@ -165,6 +173,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         }
     }
 
+    @Ignore("Needs working callback URL in $PROJECT_HOME/../superfeedr.properties")
     @Test
     public void testSubscribeWeb() throws Exception {
         SuperFeedrSubscriber instance = null;
@@ -172,7 +181,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         try {
             instance = SuperFeedrSubscriber.createInstance();
             instance.start();
-            String id = instance.subscribe(this, new URL("http://deontik.com#.deontik_text_body"));
+            String id = instance.subscribe(this, new URL("http://push-pub.appspot.com#article.h-entry"));
             assertNotNull("ID for subscription should be returned", id);
             Thread.sleep(4000);
             assertNotNull("Subscription should be confirmed", instance.confirmed.get(id));
@@ -182,6 +191,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         }
     }
 
+    @Ignore("Needs working callback URL in $PROJECT_HOME/../superfeedr.properties")
     @Test
     public void testSubscribeWebAndWait() throws Exception {
         SuperFeedrSubscriber instance = null;
@@ -201,6 +211,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         }
     }
 
+    @Ignore("Needs working callback URL in $PROJECT_HOME/../superfeedr.properties")
     @Test
     public void testSubscribeAndRetrieveWeb() throws Exception {
         SuperFeedrSubscriber instance = null;
@@ -208,7 +219,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         try {
             instance = SuperFeedrSubscriber.createInstance();
             instance.start();
-            String id = instance.subscribeAndRetrieve(this, new URL("http://deontik.com#.deontik_text_body"), null);
+            String id = instance.subscribeAndRetrieve(this, new URL("http://push-pub.appspot.com#article.h-entry"), null);
             assertNotNull(htmlContent);
             assertNotNull(jsonContent);
             // Turns out that web content with 'retrieve' is *only* delivered via pubsubhubbub (not in HTTP response)
@@ -221,6 +232,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         }
     }
 
+    @Ignore("Needs working callback URL in $PROJECT_HOME/../superfeedr.properties")
     @Test
     public void testSubscribeAndRetrieveWebWait() throws Exception {
         SuperFeedrSubscriber instance = null;
@@ -244,6 +256,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         }
     }
 
+    @Ignore("Needs working callback URL in $PROJECT_HOME/../superfeedr.properties")
     @Test
     public void testSubscribeAndRetrieveWebAtom() throws Exception {
         SuperFeedrSubscriber instance = null;
@@ -252,7 +265,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
             instance = SuperFeedrSubscriber.createInstance();
             instance.getOptions().put(SuperFeedrSubscriber.PROPS_FORMAT, "atom");
             instance.start();
-            String id = instance.subscribeAndRetrieve(this, new URL("http://deontik.com#.deontik_text_body"), null);
+            String id = instance.subscribeAndRetrieve(this, new URL("http://push-pub.appspot.com#article.h-entry"), null);
             assertNotNull(xmlContent);
             assertNotNull(htmlContent);
             // Turns out that web content with 'retrieve' is *only* delivered via pubsubhubbub (not in HTTP response)
@@ -279,7 +292,6 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         }
     }
 
-    @Override
     public void handle(String subs_id, InputStream body, Map<String, List<String>> headers) {
         try {
             switch(type) {
@@ -298,11 +310,11 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
                     // entry is returned when we use the 'retrieve' verb.
                     hubContent = readStream(body);
                     System.out.println("Raw content:" + hubContent);
-                    if (hubContent.substring(0,1).equals("{")) {
+                    if (JSON_START.matcher(hubContent).find()) {
                         System.out.println("Have JSON content from HTMl subscription");
                         jsonContent = new JSONObject(hubContent);
                         hubContent = jsonContent.toString(2);
-                    } else if (hubContent.substring(0,2).equals("<?")){
+                    } else if (XML_START.matcher(hubContent).find()){
                         System.out.println("Have XML content from HTMl subscription");
                         xmlContent = builder.parse(new ByteArrayInputStream(hubContent.getBytes()));
                         hubContent = SuperFeedrAtomChannel.prettyPrint(xmlContent, xmlContent);
@@ -318,6 +330,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
                 this.notify();
             }
         } catch (Exception exc) {
+            System.out.println("Error handling content: " + exc.getMessage());
             notifyFailed = exc;
         }
     }
@@ -328,6 +341,7 @@ public class SuperFeedrSubscriberTest implements PubSubContentHandler {
         while (scanner.hasNextLine()) {
             result.append(scanner.nextLine());
         }
+        scanner.close();
         return result.toString();
     }
 }

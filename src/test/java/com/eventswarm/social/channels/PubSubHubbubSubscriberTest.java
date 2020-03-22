@@ -1,13 +1,13 @@
 package com.eventswarm.social.channels;
 
+import com.eventswarm.channels.HttpContentHandler;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
-import org.apache.log4j.BasicConfigurator;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 import static org.junit.Assert.*;
 
 import java.io.*;
@@ -19,7 +19,7 @@ import java.util.*;
  * User: andyb
  * To change this template use File | Settings | File Templates.
  */
-public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHandler {
+public class PubSubHubbubSubscriberTest implements HttpHandler, HttpContentHandler {
     URL hubURL, subURL;
     HttpServer hub;
     HttpExchange hubRequest;
@@ -34,11 +34,6 @@ public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHan
     byte[] buffer;
     boolean otherCalled;
     String content;
-
-    @BeforeClass
-    public static void setup() throws Exception {
-        BasicConfigurator.configure();
-    }
 
     @Before
     public void setUp() throws Exception {
@@ -90,8 +85,7 @@ public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHan
         hubResponseCode = 202;
         String id = instance.subscribe(this, new URL("http://myrssfeed.com"), null);
         System.out.println("PubSubHubub subscription id: " + id);
-        PubSubContentHandler other = new PubSubContentHandler() {
-            @Override
+        HttpContentHandler other = new HttpContentHandler() {
             public void handle(String subs_id, InputStream body, Map<String, List<String>> headers) {
                 // do nothing
             }
@@ -206,6 +200,7 @@ public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHan
         instance.stop(false);
     }
 
+    @Ignore("http://pubsub.whyanbeel.net needs to be directed to http://localhost:5432")
     @Test
     public void testHandleRemoteSubConfirm() throws Exception {
         PubSubHubbubSubscriber instance = new PubSubHubbubSubscriber(hubURL, subURL.toString(), subURL.getPort(), null, null);
@@ -220,6 +215,7 @@ public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHan
         instance.stop(false);
     }
 
+    @Ignore("http://pubsub.whyanbeel.net needs to be directed to http://localhost:5432")
     @Test
     public void testRealSubscribe() throws Exception {
         PubSubHubbubSubscriber instance = null;
@@ -241,6 +237,7 @@ public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHan
         }
     }
 
+    @Ignore("http://pubsub.whyanbeel.net needs to be directed to http://localhost:5432")
     @Test
     public void testRealNotify() throws Exception {
         PubSubHubbubSubscriber instance = null;
@@ -259,7 +256,6 @@ public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHan
         }
     }
 
-    @Override
     public void handle(String subs_id, InputStream body, Map<String, List<String>> headers) {
         try {
             hubContent = readStream(body);
@@ -269,7 +265,6 @@ public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHan
         }
     }
 
-    @Override
     public void handle(HttpExchange exchange) throws IOException {
         hubRequest = exchange;
         hubRequestContent = readStream(exchange.getRequestBody());
@@ -310,6 +305,7 @@ public class PubSubHubbubSubscriberTest implements HttpHandler, PubSubContentHan
         while (scanner.hasNextLine()) {
             result.append(scanner.nextLine());
         }
+        scanner.close();
         return result.toString();
     }
 

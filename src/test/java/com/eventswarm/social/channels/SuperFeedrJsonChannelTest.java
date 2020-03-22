@@ -4,8 +4,6 @@ import com.eventswarm.AddEventAction;
 import com.eventswarm.AddEventTrigger;
 import com.eventswarm.events.Event;
 import com.eventswarm.events.jdo.OrgJsonEvent;
-import org.apache.log4j.BasicConfigurator;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.Before;
 import static org.junit.Assert.*;
@@ -25,11 +23,6 @@ public class SuperFeedrJsonChannelTest implements AddEventAction {
     SuperFeedrSubscriber subscriber;
     List<Event> events;
     URL topic;
-
-    @BeforeClass
-    public static void setupLogging() throws Exception {
-        BasicConfigurator.configure();
-    }
 
     @Before
     public void setup() throws Exception {
@@ -113,7 +106,6 @@ public class SuperFeedrJsonChannelTest implements AddEventAction {
         instance.unsubscribe();
     }
 
-    @Override
     public void execute(AddEventTrigger trigger, Event event) {
         events.add(event);
     }

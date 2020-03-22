@@ -117,12 +117,10 @@ public class JsonTweetEvent extends OrgJsonEvent implements Keywords, OrderedKey
         return "http://" + TweetEvent.SOURCE + "/" + json.getJSONObject("user").getString("screen_name") + "/status/" + Long.toString(json.getLong("id"));
     }
 
-    @Override
     public Long getTweetId() {
         return this.json.getLong("id");
     }
 
-    @Override
     public String getTweetUrl() {
         return tweetUrlFor(this.json);
     }
@@ -147,7 +145,6 @@ public class JsonTweetEvent extends OrgJsonEvent implements Keywords, OrderedKey
         return this.getString(STATUS_TEXT_KEY);
     }
 
-    @Override
     public Set<String> getHashtags() {
         HashSet<String> result = new HashSet<String>();
         JSONArray array = getJSONObject("entities").getJSONArray("hashtags");
@@ -157,7 +154,6 @@ public class JsonTweetEvent extends OrgJsonEvent implements Keywords, OrderedKey
         return result;
     }
 
-    @Override
     public Set<String> getCashtags() {
         HashSet<String> result = new HashSet<String>();
         JSONArray array = getJSONObject("entities").getJSONArray("hashtags");
@@ -170,12 +166,10 @@ public class JsonTweetEvent extends OrgJsonEvent implements Keywords, OrderedKey
         return result;
     }
 
-    @Override
     public String getAuthor() {
         return getJSONObject("user").getString("screen_name").toLowerCase();
     }
 
-    @Override
     public Set<String> getMentions() {
         HashSet<String> result = new HashSet<String>();
         JSONArray array = getJSONObject("entities").getJSONArray("user_mentions");
@@ -185,7 +179,6 @@ public class JsonTweetEvent extends OrgJsonEvent implements Keywords, OrderedKey
         return result;
     }
 
-    @Override
     public boolean isRetweet() {
         return getBoolean("retweeted");  //To change body of implemented methods use File | Settings | File Templates.
     }

@@ -5,3 +5,10 @@ src/main/resources/log4j.properties
 src/main/resources/twitter4j.properties
 log/
 src/main/resources/superfeedr.properties
+src/test/resources/fixtures/retrieve.txt
+src/test/resources/log4j.properties
+src/test/resources/superfeedr.properties
+.classpath
+.project
+.settings/
+.vscode/
