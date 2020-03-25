@@ -6,6 +6,27 @@
     <groupId>com.eventswarm</groupId>
     <artifactId>eventswarm-social</artifactId>
     <version>2.0-SNAPSHOT</version>
+
+    <name>EventSwarm social</name>
+    <url>https://github.com/eventswarm/eventswarm-social</url>
+    <description>Social media channels and utilities for EventSwarm</description>
+  
+    <scm>
+      <url>https://github.com/eventswarm/eventswarm-social.git</url>
+    </scm>
+  
+    <licenses>
+      <license>
+        <name>Apache License, Version 2.0</name>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        <distribution>repo</distribution>
+      </license>
+    </licenses>
+  
+    <properties>
+      <maven.compiler.target>1.8</maven.compiler.target>
+    </properties>
+  
     <dependencies>
         <dependency>
             <groupId>com.eventswarm</groupId>
@@ -39,7 +60,7 @@
             <!-- jsoup HTML parser library @ http://jsoup.org/ -->
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
-            <version>[1.8.1,]</version>
+            <version>[1.12,]</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
